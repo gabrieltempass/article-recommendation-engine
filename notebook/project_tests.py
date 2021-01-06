@@ -2,8 +2,8 @@ import pandas as pd
 import numpy as np
 import pickle
 
-df = pd.read_csv('data/user-item-interactions.csv')
-df_content = pd.read_csv('data/articles_community.csv')
+df = pd.read_csv('../data/user_item_interactions.csv')
+df_content = pd.read_csv('../data/articles_community.csv')
 del df['Unnamed: 0']
 del df_content['Unnamed: 0']
 
@@ -77,6 +77,3 @@ def sol_4_test(sol_4_dict):
         for k, v in sol_4_dict_1.items():
             if sol_4_dict_1[k] != sol_4_dict[k]:
                 print("Sorry it looks like that isn't the right value associated with {}.  Try again.".format(k))
-     
-    
- 
