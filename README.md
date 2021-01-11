@@ -40,6 +40,7 @@ Discuss which methods to use moving forward, and how to test how well the recomm
 * NumPy 1.19.2
 * Pandas 1.1.5
 * Matplotlib 3.3.2
+* Jupyter notebook 6.1.6
 
 ## Execute
 
@@ -50,7 +51,8 @@ Discuss which methods to use moving forward, and how to test how well the recomm
 2. Go to the project's directory.
 3. Open the Jupyter notebook, with the command:
 
-`jupyter "<project_directory>/notebook/Recommendations with IBM"`
+`jupyter notebook "notebook/Recommendations with IBM.ipynb"`
+
 
 ## Notebook
 
