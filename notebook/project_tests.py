@@ -26,7 +26,7 @@ def sol_1_test(sol_1_dict):
     else:
         for k, v in sol_1_dict.items():
             if sol_1_dict_[k] != sol_1_dict[k]:
-                print("Oops! It looks like the value associated with: {} wasn't right. Try again. It might just be the datatype.  All of the values should be ints except the article_id should be a string. Let each row be considered a separate user-article interaction. If a user interacts with an article 3 times, these are considered 3 separate interactions.\n\n  Notice you may also find the number of unique users as 5149 if you count the null user. However, this is hard to catch without mapping first!".format(k))
+                print("Oops! It looks like the value associated with: {} wasn't right. Try again. It might just be the datatype.  All of the values should be ints except the article_id should be a string. Let each row be considered a separate user-article interaction. If a user interacts with an article 3 times, these are considered 3 separate interactions.\n\n Notice you may also find the number of unique users as 5149 if you count the null user. However, this is hard to catch without mapping first!".format(k))
                 
                 
 def sol_2_test(top_articles):
@@ -39,7 +39,7 @@ def sol_2_test(top_articles):
         if set(eval(file)) == set(pickle.load(open( "{}.p".format(file), "rb" ))):
             print("Your {} looks like the solution list! Nice job.".format(file))
         else:
-            print("Oops! The {} list doesn't look how we expected.  Try again.".format(file))
+            print("Oops! The {} list doesn't look how we expected. Try again.".format(file))
     
     
     
@@ -54,7 +54,7 @@ def sol_5_test(sol_5_dict):
     else:
         for k, v in sol_5_dict_1.items():
             if set(sol_5_dict[k]) != set(sol_5_dict_1[k]):
-                print("Oops!  Looks like there is a mistake with the {} key in your dictionary.  The answer should be {}.  Try again.".format(k,v))
+                print("Oops!  Looks like there is a mistake with the {} key in your dictionary. The answer should be {}. Try again.".format(k,v))
     
     
 def sol_4_test(sol_4_dict):
@@ -67,13 +67,13 @@ def sol_4_test(sol_4_dict):
     sol_4_dict_1 = {
     'How many users can we make predictions for in the test set?': c, 
     'How many users in the test set are we not able to make predictions for because of the cold start problem?': a, 
-    'How many movies can we make predictions for in the test set?': b,
-    'How many movies in the test set are we not able to make predictions for because of the cold start problem?': d
+    'How many articles can we make predictions for in the test set?': b,
+    'How many articles in the test set are we not able to make predictions for because of the cold start problem?': d
     }
     
     if sol_4_dict == sol_4_dict_1:
-        print("Awesome job!  That's right!  All of the test movies are in the training data, but there are only 20 test users that were also in the training set.  All of the other users that are in the test set we have no data on.  Therefore, we cannot make predictions for these users using SVD.")
+        print("Awesome job! That's right! All of the test articles are in the training data, but there are only 20 test users that were also in the training set. All of the other users that are in the test set we have no data on. Therefore, we cannot make predictions for these users using SVD.")
     else:
         for k, v in sol_4_dict_1.items():
             if sol_4_dict_1[k] != sol_4_dict[k]:
-                print("Sorry it looks like that isn't the right value associated with {}.  Try again.".format(k))
+                print("Sorry it looks like that isn't the right value associated with {}. Try again.".format(k))
