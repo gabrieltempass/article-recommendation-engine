@@ -15047,7 +15047,7 @@ dtype: int64</pre>
 
 </div>
 
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[17]:</div>
@@ -15055,13 +15055,38 @@ dtype: int64</pre>
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Fill in the median and maximum number of user_article interactios below</span>
 
-<span class="n">median_val</span> <span class="o">=</span> <span class="mi">3</span>  <span class="c1"># 50% of individuals interact with ____ number of articles or fewer.</span>
-<span class="n">max_views_by_user</span> <span class="o">=</span> <span class="mi">364</span>  <span class="c1"># The maximum number of user-article interactions by any 1 user is ____.</span>
+<span class="n">median_val</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">df_interactions_per_user</span><span class="o">.</span><span class="n">median</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">max_views_by_user</span> <span class="o">=</span> <span class="n">df_interactions_per_user</span><span class="o">.</span><span class="n">max</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;50</span><span class="si">% o</span><span class="s1">f individuals interact with </span><span class="si">{}</span><span class="s1"> of articles or fewer.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">median_val</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;The maximum number of user-article interactions by any user is </span><span class="si">{}</span><span class="s1">.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">max_views_by_user</span><span class="p">))</span>
 </pre></div>
 
      </div>
 </div>
 </div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+
+<div class="jp-OutputArea-child">
+
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
+<pre>50% of individuals interact with 3 of articles or fewer.
+The maximum number of user-article interactions by any user is 364.
+</pre>
+</div>
+</div>
+
+</div>
+
 </div>
 
 </div>
@@ -15847,17 +15872,28 @@ The 3 most similar users to user 46 are: [4201, 23, 3782]
 <span class="sd">    and ends exceeding m, the last items are chosen arbitrarily</span>
 <span class="sd">    </span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="n">recommendations</span> <span class="o">=</span> <span class="p">[]</span>
+    
+    <span class="n">recommendation_ids</span> <span class="o">=</span> <span class="p">[]</span>
+    
     <span class="n">most_similar_users</span> <span class="o">=</span> <span class="n">find_similar_users</span><span class="p">(</span><span class="n">user_id</span><span class="p">)</span>
+    <span class="n">user_read_articles</span> <span class="o">=</span> <span class="n">get_user_articles</span><span class="p">(</span><span class="n">user_id</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
     
     <span class="k">for</span> <span class="n">user</span> <span class="ow">in</span> <span class="n">most_similar_users</span><span class="p">:</span>
         <span class="n">article_ids</span> <span class="o">=</span> <span class="n">get_user_articles</span><span class="p">(</span><span class="n">user</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">recommendations</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">()</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">recommendations</span><span class="p">,</span> <span class="n">article_ids</span><span class="p">))</span>
 
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">recommendations</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">m</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">article_id</span> <span class="ow">in</span> <span class="n">article_ids</span><span class="p">:</span>
+            
+            <span class="k">if</span> <span class="n">article_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">recommendation_ids</span> <span class="ow">and</span> <span class="n">article_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">user_read_articles</span><span class="p">:</span>
+                <span class="n">recommendation_ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">article_id</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">recommendation_ids</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">m</span><span class="p">:</span>
+                <span class="k">break</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">recommendation_ids</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">m</span><span class="p">:</span>
             <span class="k">break</span>
     
-    <span class="k">return</span> <span class="n">recommendations</span><span class="p">[:</span><span class="n">m</span><span class="p">]</span> <span class="c1"># return your recommendations for this user_id</span>
+    <span class="n">recommendation_titles</span> <span class="o">=</span> <span class="n">get_article_titles</span><span class="p">(</span><span class="n">recommendation_ids</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">recommendation_ids</span><span class="p">,</span> <span class="n">recommendation_titles</span> <span class="c1"># return your recommendations for this user_id</span>
 </pre></div>
 
      </div>
@@ -15872,7 +15908,7 @@ The 3 most similar users to user 46 are: [4201, 23, 3782]
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Check Results</span>
-<span class="n">get_article_titles</span><span class="p">(</span><span class="n">user_user_recs</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span> <span class="c1"># Return 10 recommendations for user 1</span>
+<span class="n">user_user_recs</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># Return 10 recommendations for user 1</span>
 </pre></div>
 
      </div>
@@ -15894,16 +15930,17 @@ The 3 most similar users to user 46 are: [4201, 23, 3782]
 
 
 <div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain">
-<pre>[&#39;use deep learning for image classification&#39;,
- &#39;apache spark lab, part 1: basic concepts&#39;,
- &#39;putting a human face on machine learning&#39;,
- &#39;sector correlations shiny app&#39;,
- &#39;shiny 0.13.0&#39;,
- &#39;introduction to market basket analysis in\xa0python&#39;,
- &#39;python if statements explained (python for data science basics #4)&#39;,
- &#39;fighting gerrymandering: using data science to draw fairer congressional districts&#39;,
- &#39;python for loops explained (python for data science basics #5)&#39;,
- &#39;predict loan applicant behavior with tensorflow neural networking&#39;]</pre>
+<pre>([&#39;2&#39;, &#39;12&#39;, &#39;14&#39;, &#39;16&#39;, &#39;26&#39;, &#39;28&#39;, &#39;29&#39;, &#39;33&#39;, &#39;50&#39;, &#39;74&#39;],
+ [&#39;got zip code data? prep it for analytics. – ibm watson data lab – medium&#39;,
+  &#39;timeseries data analysis of iot events by using jupyter notebook&#39;,
+  &#39;graph-based machine learning&#39;,
+  &#39;using brunel in ipython/jupyter notebooks&#39;,
+  &#39;experience iot with coursera&#39;,
+  &#39;the 3 kinds of context: machine learning and the art of the frame&#39;,
+  &#39;deep forest: towards an alternative to deep neural networks&#39;,
+  &#39;this week in data science (april 18, 2017)&#39;,
+  &#39;higher-order logistic regression for large datasets&#39;,
+  &#39;using machine learning to predict parking difficulty&#39;])</pre>
 </div>
 
 </div>
@@ -15972,7 +16009,35 @@ The 3 most similar users to user 46 are: [4201, 23, 3782]
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[35]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">sort_articles_by_interaction</span><span class="p">(</span><span class="n">article_ids</span><span class="p">,</span> <span class="n">df</span><span class="o">=</span><span class="n">df_interactions</span><span class="p">):</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">get_top_sorted_users</span><span class="p">(</span><span class="n">user_id</span><span class="p">,</span> <span class="n">user_item</span><span class="o">=</span><span class="n">user_item</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    INPUT:</span>
+<span class="sd">    user_id - (int) a user_id</span>
+<span class="sd">    user_item - (pandas dataframe) matrix of users by articles: </span>
+<span class="sd">                1&#39;s when a user has interacted with an article, 0 otherwise</span>
+<span class="sd">    </span>
+<span class="sd">    OUTPUT:</span>
+<span class="sd">    most_similar_users - (list) an ordered list of the most similar user ids compared to the one given as input.</span>
+<span class="sd">                         Sorted by similarity and then by number of interactions.</span>
+<span class="sd">    </span>
+<span class="sd">    Description:</span>
+<span class="sd">    Computes the similarity of every pair of users based on the dot product.</span>
+<span class="sd">    </span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    
+    <span class="n">user_similarity</span> <span class="o">=</span> <span class="n">user_item</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">user_item</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">user_id</span><span class="p">])</span>
+    <span class="n">user_similarity</span> <span class="o">=</span> <span class="n">user_similarity</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">user_id</span><span class="p">)</span><span class="o">.</span><span class="n">to_frame</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;similarity&#39;</span><span class="p">)</span>
+
+    <span class="n">article_interactions</span> <span class="o">=</span> <span class="n">df_interactions</span><span class="p">[</span><span class="s1">&#39;user_id&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span><span class="o">.</span><span class="n">to_frame</span><span class="p">(</span><span class="s1">&#39;interactions&#39;</span><span class="p">)</span>
+
+    <span class="n">top_sorted_users</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">user_similarity</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">article_interactions</span><span class="p">)</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+    <span class="c1"># since the DFs user_similarity and article_interactions are already sorted, the result of the join will be sorted too,</span>
+    <span class="c1"># so there&#39;s no need to do this: most_similar_users.sort_values(by=[&#39;similarity&#39;, &#39;interactions&#39;], ascending=False, inplace=True)</span>
+    
+    <span class="k">return</span> <span class="n">top_sorted_users</span> <span class="c1"># return a list of the users in order from most to least similar</span>
+
+
+<span class="k">def</span> <span class="nf">sort_articles_by_interaction</span><span class="p">(</span><span class="n">article_ids</span><span class="p">,</span> <span class="n">df</span><span class="o">=</span><span class="n">df_interactions</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    INPUT:</span>
 <span class="sd">    article_ids - (list) a list of the article ids to be sorted by number of interactions</span>
@@ -16020,10 +16085,10 @@ The 3 most similar users to user 46 are: [4201, 23, 3782]
     
     <span class="n">recommendation_ids</span> <span class="o">=</span> <span class="p">[]</span>
     
-    <span class="n">most_similar_users</span> <span class="o">=</span> <span class="n">find_similar_users</span><span class="p">(</span><span class="n">user_id</span><span class="p">)</span>
+    <span class="n">top_sorted_users</span> <span class="o">=</span> <span class="n">get_top_sorted_users</span><span class="p">(</span><span class="n">user_id</span><span class="p">)</span>
     <span class="n">user_read_articles</span> <span class="o">=</span> <span class="n">get_user_articles</span><span class="p">(</span><span class="n">user_id</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
     
-    <span class="k">for</span> <span class="n">user</span> <span class="ow">in</span> <span class="n">most_similar_users</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">user</span> <span class="ow">in</span> <span class="n">top_sorted_users</span><span class="p">:</span>
         <span class="n">article_ids</span> <span class="o">=</span> <span class="n">get_user_articles</span><span class="p">(</span><span class="n">user</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">articles_sorted_by_interaction</span> <span class="o">=</span> <span class="n">sort_articles_by_interaction</span><span class="p">(</span><span class="n">article_ids</span><span class="p">)</span>
         
@@ -16879,7 +16944,8 @@ Test articles unable to predict because of the cold start: 0
 </div>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>The chart suggest the results are overfitting, which is probably due to the small number of users in the test group (only 20 IDs). An approach to verify if the recommendations are good is to do an A/B test. For example, divide a sample of users into two groups: one to be the control and the other one to receive rank-based, collaborative filtering and matrix factorization recommendations. Analyzing the interactions between them would show if the recommendations are improving this metric or not.</p>
+<p>The chart shows that the accuracy on the test set goes down as the number of latent features increase. The best value is achieved with 10 latent features. However, the accuracy is not the best evaluation metric to be used, because the classes are very unbalanced. A better metric would be the Recall, which focuses on measuring how well are the predictions for the articles that were actually read by the test users.</p>
+<p>An approach to verify if the recommendations are good is to do an A/B test. For example, divide a sample of users into two groups: one to be the control and the other one to receive rank-based, collaborative filtering and matrix factorization recommendations. Analyzing the interactions between them would show if the recommendations are improving this metric or not.</p>
 
 </div>
 </div>
